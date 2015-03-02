@@ -7,6 +7,9 @@
 #include <iostream>
 
 const TString AnaFilename = "/export/d00/scratch/luck/hlt_Ian_lowlumi_V2_neutrinogun_photonanalyzer.root";
+// eta = 3.0 triggers
+//const TString HLTFilename = "/export/d00/scratch/luck/hlt_jetsphotons_lowlumi_V6_neutrinogun_openHLT.root";
+// eta = 1.479 triggers
 const TString HLTFilename = "/export/d00/scratch/luck/hlt_Ian_lowlumi_V2_neutrinogun_openHLT.root";
 
 const int nBins = 100;
@@ -139,7 +142,7 @@ void matchPhotonTree()
   }
 
   //save output
-  TFile *outFile = TFile::Open("photonTurnOn.root","RECREATE");
+  TFile *outFile = TFile::Open("photonTurnOn_barrel.root","RECREATE");
   outFile->cd();
   hists_pt[0]->Write();
   hists_eta[0]->Write();
