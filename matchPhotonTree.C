@@ -5,12 +5,18 @@
 #include <TGraphAsymmErrors.h>
 #include <TH1D.h>
 #include <iostream>
+#include <TMath.h>
 
+// neutrino gun analyzer
 const TString AnaFilename = "/export/d00/scratch/luck/hlt_Ian_lowlumi_V2_neutrinogun_photonanalyzer.root";
 // eta = 3.0 triggers
-//const TString HLTFilename = "/export/d00/scratch/luck/hlt_jetsphotons_lowlumi_V6_neutrinogun_openHLT.root";
+const TString HLTFilename = "/export/d00/scratch/luck/hlt_jetsphotons_lowlumi_V9_neutrinogun_openHLT.root";
 // eta = 1.479 triggers
-const TString HLTFilename = "/export/d00/scratch/luck/hlt_Ian_lowlumi_V2_neutrinogun_openHLT.root";
+//const TString HLTFilename = "/export/d00/scratch/luck/hlt_Ian_lowlumi_V2_neutrinogun_openHLT.root";
+
+//740pre8 Zee relval photons
+//const TString AnaFilename = "/export/d00/scratch/luck/hlt_jetsphotons_lowlumi_relvalZee_analyzer.root";
+//const TString HLTFilename = "/export/d00/scratch/luck/hlt_jetsphotons_lowlumi_relvalZee_openHLT.root";
 
 const int nBins = 100;
 const double maxpt = 100;
@@ -28,11 +34,11 @@ void matchPhotonTree()
   Int_t HLT_HISinglePhoton40_v1;
   Int_t HLT_HISinglePhoton60_v1;
 
-  TString trigname[5] = {"HLT_HISinglePhoton10_v1",
-			 "HLT_HISinglePhoton15_v1",
-			 "HLT_HISinglePhoton20_v1",
-			 "HLT_HISinglePhoton40_v1",
-			 "HLT_HISinglePhoton60_v1"};
+  TString trigname[5] = {"HLT_HISinglePhoton10_barrel_v1",
+			 "HLT_HISinglePhoton15_barrel_v1",
+			 "HLT_HISinglePhoton20_barrel_v1",
+			 "HLT_HISinglePhoton40_barrel_v1",
+			 "HLT_HISinglePhoton60_barrel_v1"};
 
   HLTTree->SetBranchAddress("Event",&hlt_event);
   HLTTree->SetBranchAddress("Run",&hlt_run);
@@ -95,7 +101,7 @@ void matchPhotonTree()
     Double_t maxAnaEta = -100;
     for(int i = 0; i < nPhotons; ++i)
     {
-      if(fabs(eta[i]) > 1.44) continue;
+      if(TMath::Abs(eta[i]) > 1.44) continue;
       if(pt[i] > maxAnaPt)
       {
 	maxAnaPt = pt[i];

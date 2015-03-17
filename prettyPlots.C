@@ -10,11 +10,17 @@ void prettyPlots()
   const int NTRIG = 5;
   TGraphAsymmErrors *turnOns[NTRIG];
 
-  TString trigname[NTRIG] = {"HLT_HISinglePhoton10_v1",
-			 "HLT_HISinglePhoton15_v1",
-			 "HLT_HISinglePhoton20_v1",
-			 "HLT_HISinglePhoton40_v1",
-			 "HLT_HISinglePhoton60_v1"};
+  // TString trigname[NTRIG] = {"HLT_HISinglePhoton10_v1",
+  // 			     "HLT_HISinglePhoton15_v1",
+  // 			     "HLT_HISinglePhoton20_v1",
+  // 			     "HLT_HISinglePhoton40_v1",
+  // 			     "HLT_HISinglePhoton60_v1"};
+
+  TString trigname[NTRIG] = {"HLT_HISinglePhoton10_barrel_v1",
+  			     "HLT_HISinglePhoton15_barrel_v1",
+  			     "HLT_HISinglePhoton20_barrel_v1",
+  			     "HLT_HISinglePhoton40_barrel_v1",
+  			     "HLT_HISinglePhoton60_barrel_v1"};
 
   Int_t trigColors[NTRIG] = {1, kBlue, kRed, 90, kMagenta};
 
@@ -32,14 +38,14 @@ void prettyPlots()
 
   TCanvas *c1 = new TCanvas();//("c1","c1",700,700);
   hEmpty->Draw();
-  TLine *oneLine = new TLine(0,1,120,1);
+  TLine *oneLine = new TLine(0,1,100,1);
   oneLine->SetLineStyle(2);
   oneLine->Draw();
 
   TLegend *leg = new TLegend(0.6, 0.2, 0.9, 0.6);
   leg->SetFillColor(0);
   leg->SetTextFont(43);
-  leg->SetTextSize(16);
+  leg->SetTextSize(14);
 
   for(int i = 0; i < NTRIG; ++i)
   {
@@ -47,5 +53,7 @@ void prettyPlots()
     leg->AddEntry(turnOns[i], trigname[i], "p l");
   }
   leg->Draw();
+
+  c1->SaveAs("photon_turnOn_barrel.pdf");
 
 }
