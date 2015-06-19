@@ -8,13 +8,13 @@
 
 #include "EventMatchingCMS.h"
 
-const int MAXPHOTONS = 500;
+const int MAXJETS = 500;
 const int nBins = 100;
-const double maxPt = 100;
-const float offlineEtaCut = 1.44;
+const double maxPt = 300;
+const float offlineEtaCut = 2.0;
 const bool offlineIso = false;
 
-void matchPhotonTree(TString HiForestName, TString bitfileName, TString outFileName)
+void matchJetTree(TString HiForestName, TString bitfileName, TString outFileName)
 {
   TFile *HLTFile = TFile::Open(bitfileName);
   TTree *HLTTree = (TTree*)HLTFile->Get("hltbitanalysis/HltTree");
@@ -22,19 +22,25 @@ void matchPhotonTree(TString HiForestName, TString bitfileName, TString outFileN
   ULong64_t hlt_event;
   Int_t hlt_run, hlt_lumi;
 
-  const int NTRIG = 12;
-  TString trigname[NTRIG] = {"HLT_HISinglePhoton10_v1",
-			     "HLT_HISinglePhoton15_v1",
-			     "HLT_HISinglePhoton20_v1",
-			     "HLT_HISinglePhoton30_v1",
-			     "HLT_HISinglePhoton40_v1",
-			     "HLT_HISinglePhoton50_v1",
-			     "HLT_HISinglePhoton60_v1",
-			     "L1_SingleEG3_BptxAND",
-			     "L1_SingleEG7_BptxAND",
-			     "L1_SingleEG12_BptxAND",
-			     "L1_SingleEG21_BptxAND",
-			     "L1_SingleEG30_BptxAND"};
+  const int NTRIG = 18;
+  TString trigname[NTRIG] = {"L1_SingleS1Jet4_BptxAND",
+			     "L1_SingleS1Jet8_BptxAND",
+			     "L1_SingleS1Jet16_BptxAND",
+			     "L1_SingleS1Jet28_BptxAND",
+			     "L1_SingleJet36_BptxAND",
+			     "L1_SingleS1Jet40_BptxAND",
+			     "L1_SingleJet44_BptxAND",
+			     "L1_SingleS1Jet56_BptxAND",
+			     "L1_SingleJet68_BptxAND",
+			     "L1_SingleJet80_BptxAND",
+			     "L1_SingleJet92_BptxAND",
+			     "L1_SingleJet128_BptxAND",
+			     "HLT_PuAK4CaloJet40_v1",
+			     "HLT_PuAK4CaloJet60_v1",
+			     "HLT_PuAK4CaloJet80_v1",
+			     "HLT_PuAK4CaloJet100_v1",
+			     "HLT_PuAK4CaloJet110_v1",
+			     "HLT_PuAK4CaloJet120_v1"};
 
   Int_t triggers[NTRIG];
 
@@ -48,7 +54,7 @@ void matchPhotonTree(TString HiForestName, TString bitfileName, TString outFileN
   }
 
   TFile *inFile = TFile::Open(HiForestName);
-  TTree *f1Tree = (TTree*)inFile->Get("multiPhotonAnalyzer/photon");
+  TTree *f1Tree = (TTree*)inFile->Get("akPu4CaloJetAnalyzer/t");
   TTree *fEvtTree = (TTree*)inFile->Get("hiEvtAnalyzer/HiTree");
   TTree *fSkimTree = (TTree*)inFile->Get("skimanalysis/HltTree");
 
@@ -65,40 +71,17 @@ void matchPhotonTree(TString HiForestName, TString bitfileName, TString outFileN
   fSkimTree->SetBranchAddress("pcollisionEventSelection",&pcollisionEventSelection);
   fSkimTree->SetBranchAddress("pHBHENoiseFilter",&pHBHENoiseFilter);
 
-  Int_t nPhoton;
-  Float_t photon_pt[MAXPHOTONS];
-  Float_t photon_eta[MAXPHOTONS];
-  Float_t photon_phi[MAXPHOTONS];
-  Float_t cc4[MAXPHOTONS];
-  Float_t cr4[MAXPHOTONS];
-  Float_t ct4PtCut20[MAXPHOTONS];
-  Float_t trkSumPtHollowConeDR04[MAXPHOTONS];
-  Float_t hcalTowerSumEtConeDR04[MAXPHOTONS];
-  Float_t ecalRecHitSumEtConeDR04[MAXPHOTONS];
-  Float_t hadronicOverEm[MAXPHOTONS];
-  Float_t sigmaIetaIeta[MAXPHOTONS];
-  Int_t isEle[MAXPHOTONS];
-  Float_t sigmaIphiIphi[MAXPHOTONS];
-  Float_t swissCrx[MAXPHOTONS];
-  Float_t seedTime[MAXPHOTONS];
+  Int_t f_num;
+  Float_t f_pt[MAXJETS];
+  Float_t f_eta[MAXJETS];
+  Float_t f_phi[MAXJETS];
+  Float_t f_rawpt[MAXJETS];
 
-  f1Tree->SetBranchAddress("nPhotons",&nPhoton);
-  f1Tree->SetBranchAddress("pt",photon_pt);
-  f1Tree->SetBranchAddress("eta",photon_eta);
-  f1Tree->SetBranchAddress("phi",photon_phi);
-
-  f1Tree->SetBranchAddress("cc4",cc4);
-  f1Tree->SetBranchAddress("cr4",cr4);
-  f1Tree->SetBranchAddress("ct4PtCut20",ct4PtCut20);
-  f1Tree->SetBranchAddress("trkSumPtHollowConeDR04",trkSumPtHollowConeDR04);
-  f1Tree->SetBranchAddress("hcalTowerSumEtConeDR04",hcalTowerSumEtConeDR04);
-  f1Tree->SetBranchAddress("ecalRecHitSumEtConeDR04",ecalRecHitSumEtConeDR04);
-  f1Tree->SetBranchAddress("hadronicOverEm",hadronicOverEm);
-  f1Tree->SetBranchAddress("sigmaIetaIeta",sigmaIetaIeta);
-  f1Tree->SetBranchAddress("isEle",isEle);
-  f1Tree->SetBranchAddress("sigmaIphiIphi",sigmaIphiIphi);
-  f1Tree->SetBranchAddress("swissCrx",swissCrx);
-  f1Tree->SetBranchAddress("seedTime",seedTime);
+  f1Tree->SetBranchAddress("nref",&f_num);
+  f1Tree->SetBranchAddress("jtpt",f_pt);
+  f1Tree->SetBranchAddress("jteta",f_eta);
+  f1Tree->SetBranchAddress("jtphi",f_phi);
+  f1Tree->SetBranchAddress("rawpt",f_rawpt);
 
   TH1D *fPt = new TH1D("fPt_0",";offline p_{T} (GeV)",nBins,0,maxPt);
   TH1D *accepted[NTRIG];
@@ -146,31 +129,12 @@ void matchPhotonTree(TString HiForestName, TString bitfileName, TString outFileN
     HLTTree->GetEntry(hlt_entry);
 
     double maxfpt = 0;
-    // double maxfeta = -10;
-    // double maxfphi = -10;
-    for(int i = 0; i < nPhoton; ++i)
+    for(int i = 0; i < f_num; ++i)
     {
-      if(TMath::Abs(photon_eta[i]) < offlineEtaCut)
-	if(!isEle[i])
-	  if(TMath::Abs(seedTime[i])<3)
-	    if(swissCrx[i] < 0.9)
-	      if(sigmaIetaIeta[i] > 0.002)
-		if(sigmaIphiIphi[i] > 0.002)
-		  if(photon_pt[i] > maxfpt) {
-		    if(offlineIso){
-		      if((cc4[i] + cr4[i] + ct4PtCut20[i]) < 0.9)
-			if(hadronicOverEm[i] < 0.1)
-			{
-			  maxfpt = photon_pt[i];
-			  // maxfeta = photon_eta[i];
-			  // maxfphi = photon_phi[i];
-			}
-		    } else {
-		      maxfpt = photon_pt[i];
-		      // maxfeta = photon_eta[i];
-		      // maxfphi = photon_phi[i];
-		    }
-		  }
+      if(TMath::Abs(f_eta[i]) > offlineEtaCut) continue;
+      if(f_pt[i] > maxfpt) {
+	maxfpt = f_pt[i];
+      }
     }
 
     fPt->Fill(maxfpt);
@@ -211,7 +175,7 @@ int main(int argc, char **argv)
 {
   if(argc == 4)
   {
-    matchPhotonTree(argv[1], argv[2], argv[3]);
+    matchJetTree(argv[1], argv[2], argv[3]);
     return 0;
   }
   return 1;

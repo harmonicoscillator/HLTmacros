@@ -24,12 +24,12 @@ public:
   EventMatchingCMS(){};
   ~EventMatchingCMS(){};
 
-  void addEvent(long long event, long long lumi, long long run, long long entryNumber);
+  bool addEvent(long long event, long long lumi, long long run, long long entryNumber);
   long long retrieveEvent(long long event, long long lumi, long long run);
 
 private:
   long long makeKey(long long event, long long lumi, long long run);
-  void addKey(long long key, long long entryNumber);
+  bool addKey(long long key, long long entryNumber);
 
   std::map<long long, long long> kmap;
 
@@ -42,16 +42,16 @@ long long EventMatchingCMS::makeKey(long long event, long long lumi, long long r
   return (10000000000000000*run + 10000000000*lumi + event);
 }
 
-void EventMatchingCMS::addKey(long long key, long long entryNumber)
+bool EventMatchingCMS::addKey(long long key, long long entryNumber)
 {
   std::pair<long long, long long> p(key, entryNumber);
-  kmap.insert(p);
+  return kmap.insert(p).second;
 }
 
-void EventMatchingCMS::addEvent(long long event, long long lumi, long long run, long long entryNumber)
+bool EventMatchingCMS::addEvent(long long event, long long lumi, long long run, long long entryNumber)
 {
   long long key = makeKey(event, lumi, run);
-  addKey(key, entryNumber);
+  return addKey(key, entryNumber);
 }
 
 long long EventMatchingCMS::retrieveEvent(long long event, long long lumi, long long run)
